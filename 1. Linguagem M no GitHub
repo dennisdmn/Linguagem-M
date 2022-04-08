@@ -1,0 +1,12 @@
+let
+    // trocar o link, para buscar sua formula
+    GIT = Web.Contents("https://raw.githubusercontent.com/jovianosilveira/fx_m/master/SomaDoisNumeros.txt"),
+
+    // lendo o binario do conteudo
+    script = Text.FromBinary(GIT),
+
+    // executando
+    run = Expression.Evaluate(script)
+
+in
+    run
