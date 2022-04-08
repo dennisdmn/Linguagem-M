@@ -1,0 +1,8 @@
+// Table.TransformColumns + Text.PadStart
+// Acrescentam caracteres como prefixo promovendo
+// uma padronização na qtde de caracteres desejados
+
+= Table.TransformColumns(#"Tipo Alterado",{
+  {"NUM_NF", each Text.PadStart(_, 9, "0"), 
+  type text}
+})
