@@ -1,12 +1,13 @@
 let
     // trocar o link, para buscar sua formula
-    GIT = Web.Contents("https://raw.githubusercontent.com/jovianosilveira/fx_m/master/SomaDoisNumeros.txt"),
+    // O repositorio para esse código precisa ser publico.
+    GIT = Web.Contents("https://raw.githubusercontent.com/dennisdmn/TesteM/main/Criando_Tabela_Feriados_Fixos.txt"),
 
     // lendo o binario do conteudo
     script = Text.FromBinary(GIT),
 
     // executando
-    run = Expression.Evaluate(script)
-
+    run = Expression.Evaluate(script , #shared) 
+    
 in
     run
