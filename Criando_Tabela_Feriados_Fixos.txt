@@ -1,4 +1,5 @@
-FeriadosFixos = Table.FromRecords(
+let 
+	FeriadosFixos = Table.FromRecords(
                 {
                     [Tipo = "Confraternização Universal",               AnoMes = "0101"],
                     [Tipo = "Tiradentes",                               AnoMes = "0421"],
@@ -10,3 +11,5 @@ FeriadosFixos = Table.FromRecords(
                     [Tipo = "Natal",                                    AnoMes = "1225"]
                 }
             )
+in
+	FeriadosFixos
