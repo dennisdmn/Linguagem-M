@@ -1,0 +1,18 @@
+let
+    /*
+        1.  Script aprimorada com variáveis e parâmetros na função: List.Dates;
+        2.  Evita a dependência da tabela fato para obtenção das informações de 
+            data na criação de dCalendario;
+        3.  Trata a modelagem com o posicionamento da dCalendario no inicio do
+            ano civil e/ou fiscal.
+    */
+
+    // vDataIni e vDataFim são variáveis externas ao script.
+    ListaDatas = let DataInicioAnoCivil = Date.StartOfYear(vDataIni) in
+        List.Dates(
+        DataInicioAnoCivil,
+        Duration.Days(Date.EndOfYear(vDataFim) - DataInicioAnoCivil)+1,
+        #duration(1,0,0,0)
+    )
+in
+    ListaDatas
