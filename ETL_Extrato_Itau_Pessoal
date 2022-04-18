@@ -1,0 +1,114 @@
+let
+	/*
+		Scrip utilizado para a classificação de despesas com base no extrato do Itaú,
+		por meio de tabela auxiliar, no qual é preenchido trechos de textos (string)
+		para uma coluna personalizada definir uma classificação do genero de despesa ou
+		receita.		
+	*/
+	
+	Fonte = Excel.Workbook(File.Contents("C:\Users\denni\OneDrive\Dennis & Priscila\DOCUMENTOS PESSOAIS\CONTROLE FINANCEIRO - PRI & DENNIS\Extrato_Itau\BaseDadosExtratosItau\2021.01_Itau.xls"), null, true),
+    Lançamentos1 = Fonte{[Name="Lançamentos"]}[Data],
+    LinhasPrincipaisRemovidas = Table.Skip(Lançamentos1,8),
+    CabecalhosPromovidos = Table.PromoteHeaders(LinhasPrincipaisRemovidas, 
+      [PromoteAllScalars=true]
+      ),
+    OutrasColunasRemovidas1 = Table.SelectColumns(CabecalhosPromovidos,{
+      "data", 
+      "lançamento", 
+      "valor (R$)"
+      }),
+    ValorSubstituido = Table.ReplaceValue(OutrasColunasRemovidas1,null,0,Replacer.ReplaceValue,{"valor (R$)"}),
+    TextoemMaiuscula = Table.TransformColumns(ValorSubstituido,{
+      {"lançamento", Text.Upper, type text}
+      }),
+    LinhasFiltradas = Table.SelectRows(TextoemMaiuscula, each 
+      Text.Contains([data], "/")
+      ),
+    LinhasFiltradas1 = Table.SelectRows(LinhasFiltradas, each (
+      [lançamento] <> "(-) SALDO A LIBERAR" and 
+      [lançamento] <> "APL APLIC AUT MAIS" and 
+      [lançamento] <> "RES APLIC AUT MAIS" and 
+      [lançamento] <> "SALDO ANTERIOR" and 
+      [lançamento] <> "SALDO APLIC AUT MAIS" and 
+      [lançamento] <> "SALDO DO DIA" and 
+      [lançamento] <> "SALDO FINAL" and 
+      [lançamento] <> "SALDO FINAL DISPONIVEL" and 
+      [lançamento] <> "SALDO INICIAL" and 
+      [lançamento] <> "SALDO PARCIAL" and 
+      [lançamento] <> "SDO CTA/APL AUTOMATICAS"
+      )),
+    TipoAlterado = Table.TransformColumnTypes(LinhasFiltradas1,{
+      {"data", type date}, 
+      {"valor (R$)", type number}
+      }),
+    ColunasRenomeadas = Table.RenameColumns(TipoAlterado,{
+      {"data", "DATA"}, 
+      {"lançamento", "HISTORICO"}, 
+      {"valor (R$)", "VALOR"}
+      }),
+
+    //*Funcao de classificacao de despesas e receitas no extrato bancario do Itaú  
+    Classificacao = Table.AddColumn(
+        ColunasRenomeadas,
+        "CLASSIFICACAO",
+        each 
+          let
+            fn = (list) =>
+              List.AnyTrue(
+                List.Transform(list, (x) => Text.Contains([HISTORICO], x, Comparer.OrdinalIgnoreCase))
+              )
+          in
+      
+            if fn(List.Select(tblClassificacaoDespesasReceitas[SUPERMERCADO], each _ <> null)) then
+              "SUPERMERCADO"
+      
+            else if fn(List.Select(tblClassificacaoDespesasReceitas[REFEICAO], each _ <> null)) then
+              "REFEICAO"
+            
+            else if fn(List.Select(tblClassificacaoDespesasReceitas[AUTOMOVEL], each _ <> null)) then
+              "AUTOMOVEL"
+            
+            else if fn(List.Select(tblClassificacaoDespesasReceitas[JUROS RECEBIDOS], each _ <> null)) then
+              "JUROS ATIVOS"
+
+            else if fn(List.Select(tblClassificacaoDespesasReceitas[INVESTIMENTOS], each _ <> null)) then
+              "INVESTIMENTO FINANCEIRO"
+
+            else if fn(List.Select(tblClassificacaoDespesasReceitas[INTERNET], each _ <> null)) then
+              "INTERNET"
+
+            else if fn(List.Select(tblClassificacaoDespesasReceitas[ENERGIA], each _ <> null)) then
+              "ENERGIA ELETRICA"
+
+            else if fn(List.Select(tblClassificacaoDespesasReceitas[CELULAR], each _ <> null)) then
+              "CELULAR"
+
+            else if fn(List.Select(tblClassificacaoDespesasReceitas[SALARIO], each _ <> null)) then
+              "SALARIO"
+
+            else if fn(List.Select(tblClassificacaoDespesasReceitas[AGUA], each _ <> null)) then
+              "AGUA"
+
+            else if fn(List.Select(tblClassificacaoDespesasReceitas[ESTETICA], each _ <> null)) then
+              "ESTETICA"
+
+            else if fn(List.Select(tblClassificacaoDespesasReceitas[REMEDIO], each _ <> null)) then
+              "REMEDIO"
+
+            else if fn(List.Select(tblClassificacaoDespesasReceitas[MORADIA], each _ <> null)) then
+              "MORADIA"
+
+            else if fn(List.Select(tblClassificacaoDespesasReceitas[SERVICOS MEDICOS], each _ <> null)) then
+              "SERVICOS MEDICOS"
+
+            else if fn(List.Select(tblClassificacaoDespesasReceitas[SERVICOS BANCARIOS], each _ <> null)) then
+              "DESPESA BANCARIA"
+
+            else
+              null, type text
+      ),
+
+    Buffer = Table.Buffer(Classificacao)
+  
+in
+    Buffer
