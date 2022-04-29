@@ -1,0 +1,88 @@
+>>> TabelaSaldos => Imposto Único <<<
+
+        *** LAYOUT ***
+  ------------ -------------
+  |   DATA     |   SALDO   |
+  ------------ -------------
+  | 31/01/2021 |  nnn,nn   |
+  ------------ -------------
+  | 28/02/2021 |  nnn,nn   |
+  ------------ -------------
+  | 31/03/2021 |  nnn,nn   |
+  ------------ -------------
+  
+  OBS.: Organizado por ordem crescente de datas de apuração.
+
+//------------------------------------- INICIO ----------------------------------------------------
+  
+  (
+                TabelaSaldos    as table,
+    optional    SaldoAnterior   as number,
+    optional    contador        as number,    
+    optional    RegFim          as table       
+)=>
+
+let
+    // contador de passagem do LOOP
+    contador = 
+        if contador = null 
+        then 1 
+        else contador +1,
+
+    // Quantidade de Linhas da Tabela origem -> Quantidade de Loops a executar
+    qtd_linhas = Table.RowCount(Fonte), 
+
+    // se tem saldo anterior, tem que transformar null em numero para podermos usar
+    saldo_credor_anterior = 
+        if SaldoAnterior = null 
+        then 0 
+        else SaldoAnterior, 
+
+    // Substituindo null por zero na coluna [SALDO]
+    Fonte = 
+        Table.ReplaceValue(
+            TabelaSaldos,
+            null,
+            0,
+            Replacer.ReplaceValue,
+            {"SALDO"}
+        ),
+
+    // Selecionando a linha da tabela que representa o LOOP atual
+    LinhaSelecionada = Fonte{contador - 1},
+
+    // Saldo do mês atual
+    saldo_atual_recalculado = LinhaSelecionada[SALDO] + saldo_credor_anterior,
+
+    // Se Saldo devedor...
+    APagar = 
+        if saldo_atual_recalculado < 0 
+        then saldo_atual_recalculado 
+        else 0, 
+
+    // Se Saldo credor...
+    ARecuperar = 
+        if saldo_atual_recalculado > 0 
+        then saldo_atual_recalculado 
+        else 0, 
+
+    // adicionar colunas de PAGAR E RECUPERAR
+    RegistroFim = 
+        let 
+            a = Table.FromRecords(
+                    {Record.Combine({
+                        LinhaSelecionada, 
+                        [PAGAR = APagar, RECUPERAR = ARecuperar]
+                    })}
+                )
+        in 
+            if contador = 1 then a
+            else Table.Combine({RegFim, a}), 
+
+    out = 
+        if contador < qtd_linhas
+        then @fxSaldoAcumuladoTributos(TabelaSaldos, ARecuperar, contador, RegistroFim)
+        else RegistroFim  
+
+in
+    out
