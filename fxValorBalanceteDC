@@ -1,0 +1,16 @@
+/*
+	Trata os saldos contábeis do tipo: 15,8D ou 15,8C.
+	
+	Exemplo: 	7,23C ===> -7,23
+				    8,15D ===> +8,15
+
+*/
+
+(valor_balancete_DC as text)=>
+let
+    valor_texto = Text.Trim(valor_balancete_DC),
+    caracteres = Text.Length(valor_texto),
+    valor = Number.From(Text.Start(valor_texto,caracteres-1)),
+    sinal = if Text.End(valor_texto,1) = "D" then 1 else -1 
+in
+    valor * sinal
