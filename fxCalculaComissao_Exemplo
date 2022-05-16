@@ -1,0 +1,20 @@
+(
+    preco as number,
+    qtd as number,
+    per_comissao as number
+)=>
+
+// Exemplo de uso de função personalizada para cálculo de comissão.
+
+let
+/*
+    preco = 350,
+    qtd = 2,
+    per_comissao = 5,
+*/
+    valor_total = preco * qtd,
+    valor_comissao = 
+        if valor_total > 1000 then (per_comissao / 100) * valor_total
+        else (per_comissao / 100) / 2 * valor_total
+in
+    valor_comissao
