@@ -1,0 +1,9 @@
+let
+    Fonte = Excel.CurrentWorkbook(){[Name="Tabela1"]}[Content],
+    /*  Maneira eficiente de selecionar colunas tratando a possibilidade 
+        da inexistência de uma ou alguma da fonte de dados.
+        Sintaxe: [[A], [S], [Z]]?
+    */
+    LinhasClassificadas = Table.Sort(Fonte,{{"A", Order.Descending}})[[A], [S], [Z]]?
+in
+    LinhasClassificadas
