@@ -1,0 +1,7 @@
+let
+    Fonte = Excel.CurrentWorkbook(){[Name="Tabela1"]}[Content],
+    LinhasClassificadas = Table.Sort(Fonte,{{"A", Order.Descending}}),
+    // Reordena as colunas ignorando a inexistência de alguma(s).
+    ColunasReordenadas = Table.ReorderColumns(LinhasClassificadas,{"A", "D", "Z", "S"}, MissingField.Ignore)
+in
+    ColunasReordenadas
