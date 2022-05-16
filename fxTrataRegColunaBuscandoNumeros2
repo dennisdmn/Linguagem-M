@@ -1,0 +1,16 @@
+(entrada)=>
+let
+    /*
+        Função trata registros de uma coluna buscando registros numéricos 
+        e atribuí "null" aos registros diferentes.
+    */
+    entrada_txt = Text.Replace(Text.Trim(Text.From(entrada)), ",", "."),
+    entrada_numeros = Text.Select(entrada_txt, {"0".."9", "."}),
+    caracteres_entrada = Text.Length(entrada_txt),
+    caracteres_numeros = Text.Length(entrada_numeros),
+    fim = 
+        if caracteres_entrada = caracteres_numeros 
+        then Number.From(entrada)
+        else null 
+in
+    fim
