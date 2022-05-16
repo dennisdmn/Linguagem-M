@@ -1,0 +1,17 @@
+(
+    entrada
+)=>
+
+let
+/*
+    Função trata registros de uma coluna buscando registros numéricos e atribuindo "null" aos registros diferentes.
+*/
+
+//    entrada = "25 A",
+    convert = Number.From(entrada),
+    teste = convert is number,    
+    fim = 
+        try if teste then convert else null
+        otherwise null
+in
+    fim
