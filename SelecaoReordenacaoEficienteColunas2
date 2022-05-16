@@ -1,0 +1,12 @@
+let
+    Fonte = Excel.CurrentWorkbook(){[Name="Tabela1"]}[Content],
+    LinhasClassificadas = Table.Sort(Fonte,{{"A", Order.Descending}}),
+    
+    // O último argumento da ignora a inexistência de alguma das colunas selecionadas.
+    OutrasColunasRemovidas = Table.SelectColumns(
+      LinhasClassificadas,
+      {"A", "S", "Z", "J"}, 
+      MissingField.Ignore
+    )
+in
+    OutrasColunasRemovidas
