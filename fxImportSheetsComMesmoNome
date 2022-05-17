@@ -1,0 +1,28 @@
+(
+    Local as text,
+    NomeArquivo as text,
+	  NomeSheet as text
+)=>
+
+    /*
+		Função que busca em uma pasta (Path Folder) de rede em diversos arquivos (Workbooks) planilhas com o mesmo nome (Sheet Name).
+
+        Exemplo:
+            Path Folder: c:\Docs
+            Workbooks: Arquivo1.xlsx, Arquivo2.xlsx e Arquivo3.xlsx
+            Worksheets: Todas com o mesmo nome - "Planilha1".
+	  */
+
+let
+	  
+    // File.Contents com duas variáveis: "Local" = Path Folder e "NomeArquivo" = Todos arquivos de uma determinada pasta.
+    Fonte = Excel.Workbook(File.Contents(Local & "\"& NomeArquivo), null, null),
+    
+    // Item = a variável "NomeSheet"
+    Planilha1_Sheet = Fonte{[Item=NomeSheet,Kind="Sheet"]}[Data],
+    
+    CabecalhosPromovidos = Table.PromoteHeaders(Planilha1_Sheet, [PromoteAllScalars=true])
+
+in
+
+    CabecalhosPromovidos
