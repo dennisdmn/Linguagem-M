@@ -1,0 +1,61 @@
+/*
+    >>> Função combinada para tratamento de espaços e delimitadores irregulares entre palavras. <<<
+
+    Exemplo: 
+            Texto_Original = "A, B,     C"
+            Texto_Tratado =  "A;B;C"
+
+    Ação:   Elimina o delimitador "espaço" distribuído de maneira irregular e substuí delimitadores diversos
+            somente pelo escolhido, como no exemplo: ";".
+     
+*/
+
+
+(
+    texto as text,
+    delimitador as text
+)=>
+
+let
+    /*
+        Parte 1 da Função Personalizada para eliminar o excesso de espaços entre palavras.
+        Exemplo:
+                Texto_Original: "Hoje     chove."
+                Texto_Tratado:  "Hoje chove."
+      ------------------------------------------------------------------------
+    */
+    espaco = " ",
+    split = Text.Split(texto, espaco),
+    removeblanks = List.Select(split, each _ <> ""),
+    result=Text.Combine(removeblanks, espaco),
+    //------//------//------//------//------//------//------//------//------//
+
+    /*
+        Parte 2 da Função Personalizada padroniza o delimitador ESCOLHIDO conforme exemplo abaixo.
+        Exemplo:
+                Texto_Original: "1, 2, 3"
+                Texto_Tratado:  "1;2;3"
+    */
+    
+    
+    // Lista de possíveis caracteres de delimitadores a serem substituídos.
+    ListaPossiveisDelimitadores = {";", "/", "\", "-", ":", "|", " ", ".", ","}, 
+    ListaDePara = List.Transform(ListaPossiveisDelimitadores, each {_, delimitador}), 
+    TextoParaLista = Text.ToList(result), 
+    SubstituindoItensLista = List.ReplaceMatchingItems(TextoParaLista, ListaDePara), 
+    ListaInformandoDuplicados = List.Transform(
+        List.Positions(SubstituindoItensLista), 
+        each {
+            SubstituindoItensLista{_}, 
+            try
+                    SubstituindoItensLista{_} = SubstituindoItensLista{_ + 1} 
+                and SubstituindoItensLista{_} = delimitador
+            otherwise
+                false
+        }
+    ), 
+    RemoveSequenciaDuplicada = List.Select(ListaInformandoDuplicados, each _{1} = false), 
+    DesempacotaLista = List.Transform(RemoveSequenciaDuplicada, each _{0}), 
+    CombinaTexto = Text.Combine(DesempacotaLista)
+in
+    CombinaTexto
