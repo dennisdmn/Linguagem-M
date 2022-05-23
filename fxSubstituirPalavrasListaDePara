@@ -1,0 +1,41 @@
+/*
+        Função substituí palavras por meio de listas: "De_Para".
+
+        1° Criar uma lista de listas (NOVA): 
+             -----------------------
+            |       LISTA           |
+             -----------------------
+            |  Col_A    |  Col_B    |
+             -----------------------  
+            |   bola    |   gato    |
+             -----------------------  
+            |   prego   |   garfo   |
+             -----------------------
+
+        Exemplo1: "A bola caiu na rua." ====> "A gato caiu na rua."
+
+        Exemplo2: "O prego foi pago."   ====> "O garfo foi pago."
+
+  */
+ 
+////////////////////////////////////////////////////////////////////////////////////////////
+
+(
+  TextoSubstituir as text,
+  lista_de_para as list
+)=>
+
+let
+
+    frase_quebrada = Text.Split(TextoSubstituir, " "),
+    frase_nova = 
+        Text.Combine(
+            List.ReplaceMatchingItems(
+                frase_quebrada,
+                lista_de_para
+            )
+            ," "
+        )
+
+in
+    frase_nova
