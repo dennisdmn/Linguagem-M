@@ -1,0 +1,23 @@
+(
+	Tabela as table
+)=>
+
+let
+	/*
+		Função para substituir valores em toda a tabela, independentemente da mudança de colunas.
+		Obs.: Pode ser adaptada a outras substituições.
+	*/
+  
+	ValorParaSubstituir = null,
+  ValorSubstituto = "",
+	NomesColunas = List.Buffer(Table.ColumnNames(Tabela)),
+    ValorSubstituido = 
+      Table.ReplaceValue(
+        Tabela,
+        ValorParaSubstituir,
+        ValorSubstituto,
+        Replacer.ReplaceValue,
+        NomesColunas
+      )
+in
+    ValorSubstituido
