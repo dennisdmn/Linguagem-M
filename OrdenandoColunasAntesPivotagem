@@ -1,0 +1,26 @@
+let
+
+  /*
+    Este script EXEMPLO demonstra a necessidade de classificar a coluna de meses antes 
+    de fazer a pivotangem para que as colunas reflitam a ordem correta dos meses.
+  */
+
+  Fonte = BASE, 
+
+  // Classificação dos nº dos meses em ordem crescente antes de pivotar.
+  LinhasClassificadas = Table.Sort(Fonte, {{"MES_NUM", Order.Ascending}}), 
+  
+  // Pivotando a coluna meses com a operação de soma para que os meses sejam colunas.
+  ColunaPivo = Table.Pivot(
+    Table.TransformColumnTypes(LinhasClassificadas, {{"MES_NUM", type text}}, "pt-BR"), 
+    List.Distinct(
+      Table.TransformColumnTypes(LinhasClassificadas, {{"MES_NUM", type text}}, "pt-BR")[MES_NUM]
+    ), 
+    "MES_NUM", 
+    "QTD", 
+    List.Sum
+  )
+
+in
+
+  ColunaPivo  
