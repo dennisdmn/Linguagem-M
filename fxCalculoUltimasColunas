@@ -1,0 +1,59 @@
+(
+	Tabela as table,
+	QtdColunas as number
+)=>
+
+let 
+
+	/*
+		Função que utiliza técnicas de listas para cálculo na seleção
+		das últimas colunas de uma determinada tabela.
+	*/
+
+	// Cria uma lista com os nomes dos cabeçalhos.
+    NomesColunas = Table.ColumnNames(Tabela),
+	
+	// Cria uma lista com os cabeçalhos das últimas colunas desejadas.
+    UltimasColunas = 
+		List.LastN(
+			NomesColunas, 
+			QtdColunas
+		),
+    
+	// Cria uma lista de registros das últimas colunas seleciondas.
+	TabelaParaRegistro = 
+		Table.ToRecords(
+			Table.SelectColumns(
+				Tabela, 
+				UltimasColunas
+			)
+		),
+    
+	/* 
+		Cria uma lista das médias das últimas colunas da lista de registros. 
+		A função Record.ToList(_) transforma registros em lista para fazer a médias.
+		*** O uso do "each" com "_" é um looping entre as listas de registros.***
+	*/
+	Medias = 
+		List.Transform(
+			TabelaParaRegistro, 
+			each List.Average(Record.ToList(_)) 
+		),
+    
+	// Retorna a tabela (fonte) para a adição de uma coluna indice. 
+	FonteTabelaOriginal = Tabela,
+	
+	// Adição da coluna indice.
+    IndiceAdicionado = Table.AddIndexColumn(Personalizar1, "Linha", 0, 1, Int64.Type),
+    
+	// Acrescenta o resultado das médias das últimas colunas por meio da posição das linhas x indice adicionado.
+	AdicCol.ResultadoMedias = 
+		Table.AddColumn(
+			IndiceAdicionado, 
+			"MediaUltCol", 
+			each Medias{[Linha]}
+		)
+
+in
+
+    AdicCol.ResultadoMedias
