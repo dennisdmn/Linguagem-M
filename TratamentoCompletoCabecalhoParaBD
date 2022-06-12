@@ -1,0 +1,136 @@
+(Texto as text) =>
+
+/*
+
+  >>> Nome da função: fxRemoverCaracteresEspeciaisCabecalho. <<<
+
+ALFABETO UTF-8 RETIRADO DE:
+https://www.utf8-chartable.de/unicode-utf8-table.pl
+
+Script para tratamento de cabeçalho promovendo as seguintes ações:
+    
+    1. Substituí caracteres especiais, acentuações, pontuações e espaços;
+    2. Os espaços são substituídos por "_";
+    3. Cabeçalho padrão para tratamento de dados para banco de dados.
+    4. Exemplo: "CaBeLHo5@. t" ==> "CABECALHO5_T"
+
+*/
+let
+    
+    //  Escolher quais caracteres deseja manter
+    Letras =     
+        { 
+            "A", 
+            "B", 
+            "C", 
+            "D", 
+            "E", 
+            "F", 
+            "G", 
+            "H", 
+            "I", 
+            "J", 
+            "K", 
+            "L", 
+            "M", 
+            "N", 
+            "O", 
+            "P", 
+            "Q", 
+            "R", 
+            "S", 
+            "T", 
+            "U", 
+            "V", 
+            "W", 
+            "X", 
+            "Y", 
+            "Z",
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "_"
+        },
+
+    //  Escolher quais caracteres substiruir por quais
+    Substituir =     
+        {
+            {"À","A"},
+            {"Á","A"},
+            {"Â","A"},
+            {"Ã","A"},
+            {"Ä","A"},
+            {"È","E"},
+            {"É","E"},
+            {"Ê","E"},
+            {"Ë","E"},
+            {"Ì","I"},
+            {"Í","I"},
+            {"Î","I"},
+            {"Ò","O"},
+            {"Ó","O"},
+            {"Ô","O"},
+            {"Õ","O"},
+            {"Ö","O"},
+            {"Ù","U"},
+            {"Ú","U"},
+            {"Û","U"},
+            {"Ü","U"},
+            {"Ç","C"},
+            {"Ñ","N"},
+            {"&","E"},
+            {"{","("},
+            {"}",")"},
+            {"[","("},
+            {"]",")"},
+			      {"(","" },
+			      {")","" },
+			      {"@","" },
+			      {"/","" },
+			      {"-","" },
+			      {"+","" },
+			      {".","" },
+			      {",","" },
+			      {";","" },
+			      {":","" },
+            {" ","_" }
+        }
+
+in
+
+    
+        Text.Select(
+            Text.Combine(
+                List.ReplaceMatchingItems(
+                    Text.ToList(
+                        Text.Upper(Text.Trim(Texto))
+                    ), 
+                    Substituir
+                )
+            )   
+            ,Letras
+        )
+
+//----------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------
+
+let
+    PrefixoCabecalho = "PREFIXO", 
+    CabecalhosPromovidos = Table.PromoteHeaders(FiltroDataDifNull, [PromoteAllScalars = true]), 
+    CabecalhoPadrao = Table.PrefixColumns(
+        Table.TransformColumnNames(
+        CabecalhosPromovidos, 
+        each fxRemoverCaracteresEspeciaisCabecalho(_)
+        ), 
+      PrefixoCabecalho
+    )
+in
+	CabecalhoPadrao
