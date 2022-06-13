@@ -1,0 +1,39 @@
+let
+    Fonte = #table( 
+		{"Cabecalho", "Tipo"},
+	{
+		{"CHAVE", "type text"},
+		{"PRODUTO", "type text"},
+		{"GRUPO PRODUTO", "type text"},
+		{"SEGMENTO SECUNDÁRIO", "type text"},
+		{"SEGMENTO PRINCIPAL", "type text"},
+		{"DIA", "Int64.Type"},
+		{"MÊS", "Int64.Type"},
+		{"ANO", "Int64.Type"},
+		{"PERIODO", "Int64.Type"},
+		{"D2_EMISSAO", "type date"},
+		{"D2_CLIENTE", "type text"},
+		{"A1_NOME", "type text"},
+		{"D2_COD", "type text"},
+		{"B1_DESC", "type text"},
+		{"D2_QUANT", "type number"},
+		{"D2_DOC", "type text"},
+		{"D2_CF", "type text"},
+		{"D2_PRCVEN", "type number"},
+		{"D2_VALBRUT", "type number"},
+		{"D2_VALICM", "type number"},
+		{"D2_VALIMP5", "type number"},
+		{"D2_VALIPI", "type number"},
+		{"D2_ICMSRET", "type number"},
+		{"D2_UM", "type text"},
+		{"D2_PESO", "type number"},
+		{"D2_COMIS1", "type number"},
+		{"A1_EST", "type text"},
+		{"D2_PEDIDO", "type text"},
+		{"A1_VEND", "type text"},
+		{"D2_ITEMPV", "type number"},
+		{"D2_VALIMP6", "type number"}
+	}
+)
+in
+    Fonte
