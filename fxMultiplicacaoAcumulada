@@ -1,0 +1,28 @@
+(
+    Tabela as table,
+    AtributoAcumular as text
+)=>
+
+let 
+    Linha = Table.AddIndexColumn(Tabela, "Linha", 0, 1, Int64.Type), 
+    Calculo = 
+        Table.AddColumn(
+            Linha, 
+            AtributoAcumular & "_Acum", each
+
+
+            List.Product(
+                List.Transform(
+                    List.Range(
+                        Table.Column(Linha, AtributoAcumular) // lista com coluna selecionada                               
+                        , 0
+                        , [Linha] + 1
+                    ) // seleciona somente linhas antes dessa                                       
+                    , each _ + 1
+                ) // cria o multiplicador base                            
+            ) // multiplica as linhas antes dessa                                   
+
+
+        )
+in
+    Calculo
