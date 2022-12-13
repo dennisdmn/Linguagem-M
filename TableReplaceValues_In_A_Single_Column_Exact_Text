@@ -1,0 +1,8 @@
+//Exemplo de substituição de diversos valores em uma única coluna com base no valor inteiro de cada texto com as funções:  Table.ReplaceValue + if.	
+
+= Table.ReplaceValue(ColunasReordenadas,each [NUM_CC], each
+											if [NUM_CC] = "5925" then "5925-0" else
+											if [NUM_CC] = "9995925" then "9995925-9" else	
+											[NUM_CC]
+											,Replacer.ReplaceValue,{"NUM_CC"}
+										)
