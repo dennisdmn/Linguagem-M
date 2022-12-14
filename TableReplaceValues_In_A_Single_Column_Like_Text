@@ -9,22 +9,22 @@ let
           NomeTabela , 
           each [NOME_BANCO],
           each 
-          if Text.Contains([NOME_BANCO], "BRADESCO") = true then "BRADESCO" else
-          if Text.Contains([NOME_BANCO], "VOTORANTIM") = true then "VOTORANTIM" else
-          if Text.Contains([NOME_BANCO], "SANTANDER") = true then "SANTANDER" else
-          if Text.Contains([NOME_BANCO], "ITAU") = true then "ITAU" else
-          if Text.Contains([NOME_BANCO], "NORDESTE") = true then "NORDESTE" else
-          if Text.Contains([NOME_BANCO], "CAIXA") = true then "CEF" else
-          if Text.Contains([NOME_BANCO], "MODAL") = true then "MODAL" else
-          if Text.Contains([NOME_BANCO], "XP") = true then "XP" else
-          if Text.Contains([NOME_BANCO], "C6") = true then "C6" else
-          if Text.Contains([NOME_BANCO], "OLIVEIRA TRUST") = true then "OLIVEIRA TRUST" else
-          if Text.Contains([NOME_BANCO], "BTG") = true then "BTG" else
-          if Text.Contains([NOME_BANCO], "ORIGINAL") = true then "ORIGINAL" else
-          if Text.Contains([NOME_BANCO], "BANCO DO BRASIL") = true then "BB" else
-          if Text.Contains([NOME_BANCO], "ABC") = true then "ABC" else
-          if Text.Contains([NOME_BANCO], "BBM") = true then "BBM" else
-          [NOME_BANCO],
+                if Text.Contains([NOME_BANCO], "BRADESCO") = true then "BRADESCO" else
+                if Text.Contains([NOME_BANCO], "VOTORANTIM") = true then "VOTORANTIM" else
+                if Text.Contains([NOME_BANCO], "SANTANDER") = true then "SANTANDER" else
+                if Text.Contains([NOME_BANCO], "ITAU") = true then "ITAU" else
+                if Text.Contains([NOME_BANCO], "NORDESTE") = true then "NORDESTE" else
+                if Text.Contains([NOME_BANCO], "CAIXA") = true then "CEF" else
+                if Text.Contains([NOME_BANCO], "MODAL") = true then "MODAL" else
+                if Text.Contains([NOME_BANCO], "XP") = true then "XP" else
+                if Text.Contains([NOME_BANCO], "C6") = true then "C6" else
+                if Text.Contains([NOME_BANCO], "OLIVEIRA TRUST") = true then "OLIVEIRA TRUST" else
+                if Text.Contains([NOME_BANCO], "BTG") = true then "BTG" else
+                if Text.Contains([NOME_BANCO], "ORIGINAL") = true then "ORIGINAL" else
+                if Text.Contains([NOME_BANCO], "BANCO DO BRASIL") = true then "BB" else
+                if Text.Contains([NOME_BANCO], "ABC") = true then "ABC" else
+                if Text.Contains([NOME_BANCO], "BBM") = true then "BBM" else
+                [NOME_BANCO],
           Replacer.ReplaceValue,{"NOME_BANCO"}
     )
 
