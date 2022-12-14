@@ -5,8 +5,6 @@ let
         de uma determinada colunas.
     */
     
-    NomeTabela = Tabela,
-    
     TrocarVariosValoresContem = Table.ReplaceValue(
           NomeTabela , 
           each [NOME_BANCO],
@@ -26,7 +24,7 @@ let
           if Text.Contains([NOME_BANCO], "BANCO DO BRASIL") = true then "BB" else
           if Text.Contains([NOME_BANCO], "ABC") = true then "ABC" else
           if Text.Contains([NOME_BANCO], "BBM") = true then "BBM" else
-          NomeColuna,
+          [NOME_BANCO],
           Replacer.ReplaceValue,{"NOME_BANCO"}
     )
 
