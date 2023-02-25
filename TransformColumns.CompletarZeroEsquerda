@@ -1,0 +1,11 @@
+CompletarZeroNFORI = Table.TransformColumns(
+                           VlrSubstBlankNull,
+                           {
+                              {
+                                "NFORI", 
+                                each 
+                                    Text.PadStart( Text.From(_) ,9 , "0" ), 
+                                type text
+                               }
+                           }
+                       )
