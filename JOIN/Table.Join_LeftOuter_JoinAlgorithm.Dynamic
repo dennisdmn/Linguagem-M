@@ -1,0 +1,12 @@
+/*
+    Função: Table.Join => Funciona de maneira similar ao PROCV e com 
+            maior desempenho do que a função Table.NestedJoin.
+*/
+
+PROCV = Table.Join(
+            TabelaTipadaAuto, {"SAIDAS.CHAVE"},
+            // Tabela com ID distintos e classificados em ordem crescente
+            ListaNF_Recebidas, {"ENTRADAS.CHAVE"},
+            JoinKind.LeftOuter,
+            JoinAlgorithm.Dynamic
+        )
