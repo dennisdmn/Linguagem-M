@@ -1,0 +1,14 @@
+let
+    /*
+      Script que adiciona uma coluna que faz a checagem se há campos vazios em cada linha da Query.
+    */
+
+    // Substitua pelo nome da sua fonte de dados
+    Origem = TabelaOriginal,  
+    
+    // Adiciona uma nova coluna indicando campos vazios
+    AdicionarColunaCamposVazios = Table.AddColumn(Origem, "CamposVazios", each List.Contains(Record.FieldValues(_), null), type logical)
+    
+in
+
+    AdicionarColunaCamposVazios
