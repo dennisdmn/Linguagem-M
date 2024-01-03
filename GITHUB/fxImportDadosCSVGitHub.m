@@ -1,4 +1,4 @@
-(CaminhoArquivoCSV_GitHub) =>
+(CaminhoArquivoCSV_GitHub as text) =>
 let
 	// Importando dados de arquivos salvo em repositorio publico do GitHub.
 	// Arquivo de Excel salvo com a extensão: CSV (separado por ";" )
