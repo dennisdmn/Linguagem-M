@@ -1,0 +1,19 @@
+= (
+    Data as date
+)=>
+
+let
+    CalculoAtributos = 
+        Table.FromRecords (
+            {
+                [
+                    AnoMes    = Date.ToText ( Data, "yyyy-MM" ),
+                    AnoSemana = Date.WeekOfYear ( Data ),
+                    MesSemana = Date.WeekOfMonth ( Data )
+                ]
+            }
+        )
+
+in
+
+    CalculoAtributos
