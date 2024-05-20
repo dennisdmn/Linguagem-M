@@ -1,0 +1,11 @@
+let
+    // URL do SharePoint onde o arquivo está armazenado
+    Source = Excel.Workbook(
+		    Web.Contents(
+			    "https://seu_dominio.sharepoint.com/sites/seu_site/Documentos%20Compartilhados/Caminho/Para/Seu/Arquivo/GRUPO%20ECON%C3%94MICO%20CONSOLIDADO.xlsx"
+			), 
+			null, 
+			true
+		)
+in
+    Source
