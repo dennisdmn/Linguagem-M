@@ -1,0 +1,28 @@
+(
+    FiltroTipoDifDEV as table, 
+    columnNames as list
+) as table =>
+
+let
+
+    addCount = Table.Group(
+        FiltroTipoDifDEV, 
+        columnNames, 
+        {{"Count", Table.RowCount, type number}}
+    ), 
+
+    selectDuplicates = Table.SelectRows(addCount, each [Count] > 1), 
+
+    removeCount = Table.RemoveColumns(selectDuplicates, "Count"), 
+
+    resultado = Table.Join(
+        FiltroTipoDifDEV, 
+        columnNames, 
+        removeCount, 
+        columnNames, 
+        JoinKind.Inner
+    )
+
+in
+
+    resultado
