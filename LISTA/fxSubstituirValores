@@ -1,0 +1,23 @@
+(
+      Texto as text
+    , De as list
+    , Para as list
+)=>
+
+let
+//    De = {"Sampa", "RJ", "Sanca"},
+//    Para = {"São Paulo", "Rio de Janeiro", "São Caetano do Sul"},
+//    Texto = "RJ",
+    Zip = List.Zip({ De, Para }),
+    Resultado = List.ReplaceMatchingItems( { Texto }, Zip ){0}
+in
+    Resultado
+
+/*
+    Como aplicar:
+
+    De = List.Buffer( Dicionario[De] ), 
+    Para = List.Buffer( Dicionario[Para] ),
+    MesNumerico = Table.TransformColumns( LinhasFiltradas, {"MESES", each fxSubstituirValores( _, De, Para ), Int64.Type } )
+
+*/
