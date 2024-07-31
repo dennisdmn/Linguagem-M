@@ -1,0 +1,35 @@
+PatchRecords = Table.FromRecords(
+  Table.TransformRows(
+    tabela,
+    (r) => Record.TransformFields( r, {
+        {
+          "Min Commit", 
+          each 
+            if r[service_id] = "21430" then 81 else
+            if r[service_id] = "24000" then 230 else
+            if r[service_id] = "24008" then 18 else
+            if r[service_id] = "24009" then 46.9 else
+            _
+        },
+        {
+          "Installed", 
+          each 
+            if r[service_id] = "21430" then 90 else
+            if r[service_id] = "24000" then 230 else
+            if r[service_id] = "24008" then 18 else
+            if r[service_id] = "24009" then 52 else
+            _
+        },
+        {
+          "Requested", 
+          each 
+            if r[service_id] = "21430" then 90 else
+            if r[service_id] = "24000" then 230 else
+            if r[service_id] = "24008" then 18 else
+            if r[service_id] = "24009" then 52 else
+            _
+        }
+      }
+    )
+  )
+)
