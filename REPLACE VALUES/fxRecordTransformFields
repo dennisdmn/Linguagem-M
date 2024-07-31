@@ -1,0 +1,25 @@
+( tabela as table ) as table =>
+let
+
+  /* 
+    Função personalizada que promove a substituição de valores em diversas colunas de uma mesma tabela.
+  */
+  
+  Fonte = Table.FromRecords(
+      Table.TransformRows(
+          tabela,
+          (r) => 
+          Record.TransformFields(
+              r,
+              {
+                  { "Column A", each if r[Column B] = "1" then "Z" else _   },
+                  { "Column B", each if r[Column A] = "Y" then "99" else _  }
+              }
+          )
+      ),
+      Value.Type( tabela )
+  )
+
+in
+
+  Fonte
