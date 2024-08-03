@@ -1,0 +1,42 @@
+(
+    TabelaReferencia as table,
+    NomeCampoReferencia as text,
+    TabelaRetorno as table,
+    NomeCampoRetorno as text
+) =>
+let
+
+    // Função personalizada que funciona como a fórmula do PROCV do Excel, porém com um desempenho muito alto no Join.
+
+    // Tratando Tabela de Retorno com unicidade de IDs e Classificação do Menor para o Maior.
+    TabelaRetornoTratada = Table.Sort(
+        Table.Distinct(
+            TabelaRetorno,
+            { NomeCampoRetorno }
+        ),
+        { { NomeCampoRetorno, Order.Ascending } }
+    ),
+
+    // Aplicando o Join otimizado.
+    ColunaPROCV = Table.Join(
+        TabelaReferencia,
+        { NomeCampoReferencia },
+        TabelaRetornoTratada,
+        { NomeCampoRetorno },
+        JoinKind.LeftOuter,
+        JoinAlgorithm.Dynamic
+    )
+
+in
+
+    ColunaPROCV
+
+/*
+    // Aplicando função de junção personalizada (fxPROCV)
+    ColunaPROCV = fxPROCV(
+        ColunaValidacaoFat,
+        "DESCR_PRODUTO",
+        dClassifMotivoFat,
+        "DESCRICAO_PRODUTO"
+    )
+*/
