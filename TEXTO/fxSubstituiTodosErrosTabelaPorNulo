@@ -1,0 +1,18 @@
+(
+    Tabela as table
+)=>
+
+let
+    /*
+        Função para substituir erros por null em todas as colunas da tabela.
+    */
+
+    NomesColunas = List.Buffer(Table.ColumnNames(Tabela)),
+    ValorSubstituido = 
+        List.Accumulate(
+            NomesColunas, 
+            Tabela, 
+            (state, currentColumn) => Table.ReplaceErrorValues(state, {{currentColumn, null}})
+        )
+in
+    ValorSubstituido
