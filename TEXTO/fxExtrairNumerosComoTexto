@@ -1,0 +1,19 @@
+// Função para extrair apenas números de uma coluna e definir como texto
+(
+    Tabela as table
+  , NomeColuna as text
+) as table =>
+
+let
+
+    // Aplica a transformação na coluna especificada
+    Resultado = Table.TransformColumns(Tabela, {NomeColuna, each Text.From(Text.Select(_, {"0".."9"})), type text})
+
+in
+
+    Resultado
+
+/* 
+    Como aplicar: = ExtrairNumerosComoTexto(TabelaExemplo, "CNPJ")
+*/
+    
