@@ -1,0 +1,14 @@
+let
+
+    // Fonte: A tabela com uma única coluna chamada "Content" contendo um valor binário
+    Fonte = YourTable, // Substitua pelo nome real da sua tabela
+
+    // Transformar a coluna "Content" diretamente, convertendo o binário para um conjunto de tabelas
+    DadosExtraidos = Table.TransformColumns(
+        Fonte,
+        {"Content", each Excel.Workbook(_, true)}
+    )
+
+in
+
+    DadosExtraidos
