@@ -1,0 +1,17 @@
+let
+
+    // Obtém todas as consultas da seção ativa
+    TodasConsultas = Record.FieldNames(#sections[Section1]),
+
+    // Filtra apenas as consultas que terminam com "_"
+    ConsultasFiltradas = List.Select(TodasConsultas, each Text.EndsWith(_, "_")),
+
+    // Obtém os valores das consultas filtradas (conteúdo das tabelas)
+    ConsultasComoTabela = List.Transform(ConsultasFiltradas, each Record.Field(#sections[Section1], _)),
+
+    // Combina todas as tabelas em uma só
+    TabelaFinal = Table.Combine(ConsultasComoTabela)
+
+in
+
+    TabelaFinal
