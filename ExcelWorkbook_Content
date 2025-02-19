@@ -1,0 +1,9 @@
+let
+    // Aplicando a função: Excel.Workbook sobre a coluna: [Content]
+    TransformaExcel = Table.TransformColumns(
+        SuaTabela, 
+        { "Content", each Excel.Workbook( _, true )
+        }
+    )
+in
+    TransformaExcel
