@@ -1,111 +1,93 @@
-(Texto as text) =>
-
-/*
-
-  >>> Nome da função: fxRemoverCaracteresEspeciaisCabecalho. <<<
-
-ALFABETO UTF-8 RETIRADO DE:
-https://www.utf8-chartable.de/unicode-utf8-table.pl
-
-Script para tratamento de cabeçalho promovendo as seguintes ações:
-    
-    1. Substituí caracteres especiais, acentuações, pontuações e espaços;
-    2. Os espaços são substituídos por "_";
-    3. Cabeçalho padrão para tratamento de dados para banco de dados.
-    4. Exemplo: "CaBeLHo5@. t" ==> "CABECALHO5_T"
-
-*/
+(Tabela as table) =>
 let
-    
-    //  Escolher quais caracteres deseja manter
+    // Lista de caracteres permitidos
     Letras =     
         { 
-            "A", 
-            "B", 
-            "C", 
-            "D", 
-            "E", 
-            "F", 
-            "G", 
-            "H", 
-            "I", 
-            "J", 
-            "K", 
-            "L", 
-            "M", 
-            "N", 
-            "O", 
-            "P", 
-            "Q", 
-            "R", 
-            "S", 
-            "T", 
-            "U", 
-            "V", 
-            "W", 
-            "X", 
-            "Y", 
-            "Z",
-            "0",
-            "1",
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7",
-            "8",
-            "9",
-            "_"
+              "A"
+            , "B"
+            , "C"
+            , "D"
+            , "E"
+            , "F"
+            , "G"
+            , "H"
+            , "I"
+            , "J"
+            , "K"
+            , "L"
+            , "M"
+            , "N"
+            , "O"
+            , "P"
+            , "Q"
+            , "R"
+            , "S"
+            , "T"
+            , "U"
+            , "V"
+            , "W"
+            , "X"
+            , "Y"
+            , "Z"
+            , "0"
+            , "1"
+            , "2"
+            , "3"
+            , "4"
+            , "5"
+            , "6"
+            , "7"
+            , "8"
+            , "9"
+            , "_"
         },
 
-    //  Escolher quais caracteres substiruir por quais
+    // Mapeamento de caracteres para substituição
     Substituir =     
         {
-            {"À","A"},
-            {"Á","A"},
-            {"Â","A"},
-            {"Ã","A"},
-            {"Ä","A"},
-            {"È","E"},
-            {"É","E"},
-            {"Ê","E"},
-            {"Ë","E"},
-            {"Ì","I"},
-            {"Í","I"},
-            {"Î","I"},
-            {"Ò","O"},
-            {"Ó","O"},
-            {"Ô","O"},
-            {"Õ","O"},
-            {"Ö","O"},
-            {"Ù","U"},
-            {"Ú","U"},
-            {"Û","U"},
-            {"Ü","U"},
-            {"Ç","C"},
-            {"Ñ","N"},
-            {"&","E"},
-            {"{","("},
-            {"}",")"},
-            {"[","("},
-            {"]",")"},
-			      {"(","" },
-			      {")","" },
-			      {"@","" },
-			      {"/","" },
-			      {"-","" },
-			      {"+","" },
-			      {".","" },
-			      {",","" },
-			      {";","" },
-			      {":","" },
-            {" ","_" }
-        }
+              {"À","A"}
+            , {"Á","A"}
+            , {"Â","A"}
+            , {"Ã","A"}
+            , {"Ä","A"}
+            , {"È","E"}
+            , {"É","E"}
+            , {"Ê","E"}
+            , {"Ë","E"}
+            , {"Ì","I"}
+            , {"Í","I"}
+            , {"Î","I"}
+            , {"Ò","O"}
+            , {"Ó","O"}
+            , {"Ô","O"}
+            , {"Õ","O"}
+            , {"Ö","O"}
+            , {"Ù","U"}
+            , {"Ú","U"}
+            , {"Û","U"}
+            , {"Ü","U"}
+            , {"Ç","C"}
+            , {"Ñ","N"}
+            , {"&","E"}
+            , {"{","("}
+            , {"}",")"}
+            , {"[","("}
+            , {"]",")"}
+            , {"(",""}
+            , {")",""}
+            , {"@",""}
+            , {"/",""}
+            , {"-",""}
+            , {"+",""}
+            , {".",""}
+            , {",",""}
+            , {";",""}
+            , {":",""}
+            , {" ","_"}
+        },
 
-in
-
-    
+    // Função interna para remover caracteres especiais de um texto
+    RemoverCaracteresEspeciais = (Texto as text) as text =>
         Text.Select(
             Text.Combine(
                 List.ReplaceMatchingItems(
@@ -116,21 +98,10 @@ in
                 )
             )   
             ,Letras
-        )
+        ),
 
-//----------------------------------------------------------------------------------------------------
-//----------------------------------------------------------------------------------------------------
-//----------------------------------------------------------------------------------------------------
+    // Aplicar a função aos nomes das colunas
+    CabecalhoPadrao = Table.TransformColumnNames(Tabela, each RemoverCaracteresEspeciais(_))
 
-let
-    PrefixoCabecalho = "PREFIXO", 
-    CabecalhosPromovidos = Table.PromoteHeaders(FiltroDataDifNull, [PromoteAllScalars = true]), 
-    CabecalhoPadrao = Table.PrefixColumns(
-        Table.TransformColumnNames(
-        CabecalhosPromovidos, 
-        each fxRemoverCaracteresEspeciaisCabecalho(_)
-        ), 
-      PrefixoCabecalho
-    )
 in
-	CabecalhoPadrao
+    CabecalhoPadrao
