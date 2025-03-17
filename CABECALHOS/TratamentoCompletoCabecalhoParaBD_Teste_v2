@@ -1,0 +1,46 @@
+(Tabela as table) =>
+let
+    // Lista de caracteres permitidos
+    Letras =     
+        { 
+              "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",
+              "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "_"
+        },
+
+    // Mapeamento de caracteres para substituição
+    Substituir =     
+        {
+              {"À","A"}, {"Á","A"}, {"Â","A"}, {"Ã","A"}, {"Ä","A"}, {"È","E"}, {"É","E"}, {"Ê","E"}, {"Ë","E"}, {"Ì","I"}, {"Í","I"}, {"Î","I"},
+              {"Ò","O"}, {"Ó","O"}, {"Ô","O"}, {"Õ","O"}, {"Ö","O"}, {"Ù","U"}, {"Ú","U"}, {"Û","U"}, {"Ü","U"}, {"Ç","C"}, {"Ñ","N"}, {"&","E"},
+              {"{","("}, {"}",")"}, {"[","("}, {"]",")"}, {"(",""}, {")",""}, {"@",""}, {"/",""}, {"-",""}, {"+",""}, {".",""}, {",",""}, {";",""},
+              {":",""}, {" ","_"}
+        },
+
+    // Função interna para remover caracteres especiais de um texto
+    RemoverCaracteresEspeciais = (Texto as text) as text =>
+        Text.Select(
+            Text.Combine(
+                List.ReplaceMatchingItems(
+                    Text.ToList(
+                        Text.Upper(Text.Trim(Texto))
+                    ), 
+                    Substituir
+                )
+            )   
+            ,Letras
+        ),
+
+    // Aplicar a função aos nomes das colunas
+    CabecalhoPadrao = 
+        let
+            ColunasOriginais = Table.ColumnNames(Tabela),
+            ColunasPadronizadas = List.Transform(ColunasOriginais, each RemoverCaracteresEspeciais(_)),
+            ColunasUnicas = List.Distinct(ColunasPadronizadas),
+            TabelaComCabecalho = if List.Count(ColunasPadronizadas) = List.Count(ColunasUnicas)
+                then Table.TransformColumnNames(Tabela, each RemoverCaracteresEspeciais(_))
+                else error "Nomes de colunas duplicados após a transformação"
+        in
+            TabelaComCabecalho
+
+in
+    CabecalhoPadrao
