@@ -1,0 +1,27 @@
+(
+    Dt_Inicial as date
+  , Dt_Final as date
+) as number =>
+
+let
+
+    // Extrai o ano da data inicial
+    AnoInicial = Date.Year(Dt_Inicial),
+    
+    // Extrai o mês da data inicial
+    MesInicial = Date.Month(Dt_Inicial),
+    
+    // Extrai o ano da data final
+    AnoFinal = Date.Year(Dt_Final),
+    
+    // Extrai o mês da data final
+    MesFinal = Date.Month(Dt_Final),
+    
+    // Calcula a diferença total de meses
+    // Fórmula: (diferença de anos * 12) + diferença de meses
+    DiferencaMeses = (AnoFinal - AnoInicial) * 12 + (MesFinal - MesInicial)
+
+in
+
+    // Retorna o número total de meses entre as duas datas
+    DiferencaMeses
