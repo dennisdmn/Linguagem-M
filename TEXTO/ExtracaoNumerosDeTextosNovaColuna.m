@@ -1,5 +1,5 @@
 let
-    // Função personalizada para extrair números de uma string e converter para número inteiro
+    // Função personalizada para extrair números de uma string e converter para número inteiro.
     ExtractNumbersAsInt = (inputText as text) as number =>
     let
         // Extrair apenas os caracteres que são números
