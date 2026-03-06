@@ -144,14 +144,110 @@ in
 
 ---
 
-## ⚙️ Por que `Table.ReplaceValue` e não `Table.AddColumn`?
+### 3. `fxMantemPrimeirasLinhasTabelaAninhada.m` — Truncar tabelas aninhadas via `Table.TransformColumns`
 
-| Critério               | `Table.AddColumn` + remove | `Table.ReplaceValue`        |
-|------------------------|----------------------------|-----------------------------|
-| Passos necessários     | 3 (add, remove, rename)    | 1                           |
-| Coluna auxiliar criada | Sim                        | Não                         |
-| Tipo da coluna         | Requer redefinição         | Preservado automaticamente  |
-| Legibilidade           | Verboso                    | Conciso                     |
+Função personalizada que **mantém apenas as primeiras N linhas** de uma coluna que contém tabelas aninhadas (`nested tables`). Aplica `Table.FirstN` em cada célula do tipo `table`, ignorando valores de outros tipos sem gerar erro.
+
+- Opera **no lugar**, sem criar colunas auxiliares.
+- Protege contra células não-tabela com `Value.Is(_, type table)`.
+- Ideal para cenários de merge/expand onde a tabela aninhada pode ter múltiplas correspondências e você deseja apenas a primeira (ou N primeiras).
+
+#### Parâmetros
+
+| Parâmetro            | Tipo     | Descrição                                                                 |
+|----------------------|----------|---------------------------------------------------------------------------|
+| `pTabela`            | `table`  | Tabela de entrada que contém a coluna com tabelas aninhadas               |
+| `pNomeColunaTabela`  | `text`   | Nome da coluna cujos valores são tabelas aninhadas                        |
+| `pQuantidadeLinhas`  | `number` | Número de linhas a manter em cada tabela aninhada (ex: `1` = só a primeira) |
+
+#### Como carregar no Power Query
+
+1. Clique em **Nova Consulta → Consulta em Branco**.
+2. Abra o **Editor Avançado**.
+3. Cole o conteúdo de [`fxMantemPrimeirasLinhasTabelaAninhada.m`](./fxMantemPrimeirasLinhasTabelaAninhada.m).
+4. Renomeie a consulta para `fxMantemPrimeirasLinhasTabelaAninhada`.
+5. Clique em **Concluído**.
+
+#### Exemplo de uso — manter apenas a primeira linha
+
+```m
+let
+    Fonte = SuaTabela,
+
+    // Após um merge, a coluna "DimDePara_Hyperion" contém tabelas aninhadas
+    // com múltiplas correspondências. Mantemos apenas a primeira linha de cada.
+    PrimeiraLinhaApenas = fxMantemPrimeirasLinhasTabelaAninhada(
+        Fonte,
+        "DimDePara_Hyperion",
+        1
+    )
+in
+    PrimeiraLinhaApenas
+```
+
+#### Exemplo completo — fluxo pós-merge
+
+```m
+let
+    Fonte         = Excel.CurrentWorkbook(){[Name="tblVendas"]}[Content],
+    Dimensao      = Excel.CurrentWorkbook(){[Name="tblDimDePara"]}[Content],
+
+    // 1. Merge gera coluna com tabelas aninhadas (relação 1:N)
+    LinhasMescladas = Table.NestedJoin(
+        Fonte,    {"CodigoProduto"},
+        Dimensao, {"CodigoProduto"},
+        "DimDePara_Hyperion",
+        JoinKind.LeftOuter
+    ),
+
+    // 2. Truncar para apenas 1 linha por tabela aninhada (deduplicação)
+    PrimeiraLinhaApenas = fxMantemPrimeirasLinhasTabelaAninhada(
+        LinhasMescladas,
+        "DimDePara_Hyperion",
+        1
+    ),
+
+    // 3. Expandir normalmente
+    Expandido = Table.ExpandTableColumn(
+        PrimeiraLinhaApenas,
+        "DimDePara_Hyperion",
+        {"DescricaoHyperion"},
+        {"DescricaoHyperion"}
+    )
+in
+    Expandido
+```
+
+**Resultado esperado (antes vs depois do truncamento):**
+
+| CodigoProduto | DimDePara_Hyperion (antes)       | DimDePara_Hyperion (depois) |
+|---------------|----------------------------------|-----------------------------|
+| P001          | Table [3 linhas]                 | Table [1 linha]             |
+| P002          | Table [1 linha]                  | Table [1 linha]             |
+| P003          | Table [2 linhas]                 | Table [1 linha]             |
+
+> ⚠️ Use `pQuantidadeLinhas = 1` quando o merge for do tipo **1:N** e você quiser garantir apenas uma correspondência por linha antes do expand — evitando duplicatas no resultado final.
+
+#### Variação — manter as 3 primeiras linhas
+
+```m
+Top3Linhas = fxMantemPrimeirasLinhasTabelaAninhada(
+    LinhasMescladas,
+    "DimDePara_Hyperion",
+    3
+)
+```
+
+---
+
+## ⚙️ Por que `Table.TransformColumns` e não `Table.AddColumn`?
+
+| Critério               | `Table.AddColumn` + remove | `Table.TransformColumns` / `Table.ReplaceValue` |
+|------------------------|----------------------------|-------------------------------------------------|
+| Passos necessários     | 3 (add, remove, rename)    | 1                                               |
+| Coluna auxiliar criada | Sim                        | Não                                             |
+| Tipo da coluna         | Requer redefinição         | Preservado automaticamente                      |
+| Legibilidade           | Verboso                    | Conciso                                         |
 
 ---
 
@@ -159,6 +255,9 @@ in
 
 - [`Table.TransformColumns`](https://learn.microsoft.com/pt-br/powerquery-m/table-transformcolumns) — Microsoft Docs
 - [`Table.ReplaceValue`](https://learn.microsoft.com/pt-br/powerquery-m/table-replacevalue) — Microsoft Docs
+- [`Table.FirstN`](https://learn.microsoft.com/pt-br/powerquery-m/table-firstn) — Microsoft Docs
+- [`Table.NestedJoin`](https://learn.microsoft.com/pt-br/powerquery-m/table-nestedjoin) — Microsoft Docs
+- [`Value.Is`](https://learn.microsoft.com/pt-br/powerquery-m/value-is) — Microsoft Docs
 - [`Excel.Workbook`](https://learn.microsoft.com/pt-br/powerquery-m/excel-workbook) — Microsoft Docs
 - [`Text.Contains`](https://learn.microsoft.com/pt-br/powerquery-m/text-contains) — Microsoft Docs
 - [`Comparer.OrdinalIgnoreCase`](https://learn.microsoft.com/pt-br/powerquery-m/comparer-ordinalignorecase) — Microsoft Docs
