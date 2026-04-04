@@ -240,6 +240,69 @@ Top3Linhas = fxMantemPrimeirasLinhasTabelaAninhada(
 
 ---
 
+### 4. `fxImportaCsv.m` — Leitura de arquivo CSV binário com `Csv.Document`
+
+Função personalizada que **lê um arquivo CSV a partir de um valor binário** e retorna uma tabela estruturada com a primeira linha promovida como cabeçalho. Ideal para uso junto com `Folder.Files` e `Table.TransformColumns`.
+
+- Delimitador: **ponto e vírgula (`;`)**.
+- Encoding: **UTF-8 (65001)** — suporte a acentos e caracteres especiais.
+- Tratamento de aspas: **`QuoteStyle.Csv`** — campos com vírgula ou quebra de linha são protegidos por aspas duplas.
+- Cabeçalho promovido automaticamente via `Table.PromoteHeaders`.
+
+#### Parâmetros
+
+| Parâmetro         | Tipo     | Descrição                                                                 |
+|-------------------|----------|---------------------------------------------------------------------------|
+| `vArquivoBinario` | `binary` | Valor binário do arquivo CSV (ex: coluna `Content` de `Folder.Files`)     |
+
+**Retorno:** `table` — tabela com a primeira linha como cabeçalho
+
+#### Como carregar no Power Query
+
+1. Clique em **Nova Consulta → Consulta em Branco**.
+2. Abra o **Editor Avançado**.
+3. Cole o conteúdo de [`fxImportaCsv.m`](./fxImportaCsv.m).
+4. Renomeie a consulta para `fxImportaCsv`.
+5. Clique em **Concluído**.
+
+#### Exemplo de uso — importar múltiplos CSVs de uma pasta
+
+```m
+let
+    Arquivos  = Folder.Files("C:\Dados\CSVs"),
+    Resultado = Table.TransformColumns(
+        Arquivos,
+        {"Content", each fxImportaCsv(_)}
+    )
+in
+    Resultado
+```
+
+#### Exemplo de uso — carregar arquivo único
+
+```m
+let
+    Binario   = File.Contents("C:\Dados\vendas.csv"),
+    Resultado = fxImportaCsv(Binario)
+in
+    Resultado
+```
+
+#### Exemplo completo — pasta + combinar todas as tabelas
+
+```m
+let
+    Arquivos        = Folder.Files("C:\Dados\CSVs"),
+    TabelasImport   = Table.TransformColumns(Arquivos, {"Content", each fxImportaCsv(_)}),
+    CombinaTudo     = Table.Combine(TabelasImport[Content])
+in
+    CombinaTudo
+```
+
+> 💡 Combina perfeitamente com `Table.TransformColumns` — aplica a função diretamente na coluna `Content` de `Folder.Files`, sem `Table.AddColumn`.
+
+---
+
 ## ⚙️ Por que `Table.TransformColumns` e não `Table.AddColumn`?
 
 | Critério               | `Table.AddColumn` + remove | `Table.TransformColumns` / `Table.ReplaceValue` |
@@ -259,5 +322,7 @@ Top3Linhas = fxMantemPrimeirasLinhasTabelaAninhada(
 - [`Table.NestedJoin`](https://learn.microsoft.com/pt-br/powerquery-m/table-nestedjoin) — Microsoft Docs
 - [`Value.Is`](https://learn.microsoft.com/pt-br/powerquery-m/value-is) — Microsoft Docs
 - [`Excel.Workbook`](https://learn.microsoft.com/pt-br/powerquery-m/excel-workbook) — Microsoft Docs
+- [`Csv.Document`](https://learn.microsoft.com/pt-br/powerquery-m/csv-document) — Microsoft Docs
+- [`Table.PromoteHeaders`](https://learn.microsoft.com/pt-br/powerquery-m/table-promoteheaders) — Microsoft Docs
 - [`Text.Contains`](https://learn.microsoft.com/pt-br/powerquery-m/text-contains) — Microsoft Docs
 - [`Comparer.OrdinalIgnoreCase`](https://learn.microsoft.com/pt-br/powerquery-m/comparer-ordinalignorecase) — Microsoft Docs
